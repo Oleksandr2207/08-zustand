@@ -31,7 +31,7 @@ export default function NotesClient({ tag }: NotesClientProps) {
   });
 
   const changeWord = useDebouncedCallback((newWord: string) => {
-    setPage(1); // при пошуку завжди починаємо з 1 сторінки
+    setPage(1);
     setWord(newWord);
   }, 500);
 
@@ -48,15 +48,12 @@ export default function NotesClient({ tag }: NotesClientProps) {
           />
         )}
 
-        {/* Кнопка тепер просто посилання */}
         <Link href="/notes/action/create" className={css.toolBtn}>
           Create note +
         </Link>
       </div>
 
-      {data && data.notes.length > 0 && (
-        <NoteList noteList={data.notes} /> // без пропсів модалки
-      )}
+      {data && data.notes.length > 0 && <NoteList noteList={data.notes} />}
     </div>
   );
 }
