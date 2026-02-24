@@ -15,6 +15,7 @@ import Modal from "@/components/Modal/Modal";
 import NoteForm from "@/components/NoteForm/NoteForm";
 import SearchBox from "@/components/SearchBox/SearchBox";
 import CreateMessage from "@/components/CreateMessage/CreateMessage";
+import Link from "next/link";
 
 type Modal = "form" | "error" | "create" | "delete";
 
@@ -82,12 +83,7 @@ export default function NotesClient({ tag }: NotesClientProps) {
       {isModal && (
         <Modal onClose={closeModal}>
           {typeModal === "form" && (
-            <NoteForm
-              setIsModal={setIsModal}
-              setMessage={setMessage}
-              setTypeModal={setTypeModal}
-              onCancel={cancelForm}
-            />
+            <Link href="/notes/action/create">Create note +</Link>
           )}
           {typeModal === "create" && message && (
             <CreateMessage note={message} mess="Is created" />
