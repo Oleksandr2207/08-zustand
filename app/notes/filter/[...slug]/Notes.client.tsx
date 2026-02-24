@@ -2,7 +2,7 @@
 
 import css from "./page.module.css";
 
-import { type Note, type FetchTagNote } from "@/types/note";
+import { type FetchTagNote } from "@/types/note";
 
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
@@ -11,13 +11,8 @@ import { useDebouncedCallback } from "use-debounce";
 
 import NoteList from "@/components/NoteList/NoteList";
 import Pagination from "@/components/Pagination/Pagination";
-import Modal from "@/components/Modal/Modal";
-import NoteForm from "@/components/NoteForm/NoteForm";
 import SearchBox from "@/components/SearchBox/SearchBox";
-import CreateMessage from "@/components/CreateMessage/CreateMessage";
 import Link from "next/link";
-
-type Modal = "form" | "error" | "create" | "delete";
 
 interface NotesClientProps {
   tag: FetchTagNote;
@@ -25,10 +20,7 @@ interface NotesClientProps {
 
 export default function NotesClient({ tag }: NotesClientProps) {
   const [page, setPage] = useState(1);
-  const [isModal, setIsModal] = useState(false);
   const [word, setWord] = useState("");
-  const [typeModal, setTypeModal] = useState<Modal>("form");
-  const [message, setMessage] = useState<Note | null>(null);
 
   const { data } = useQuery({
     queryKey: ["notes", tag, page, word],
@@ -38,22 +30,8 @@ export default function NotesClient({ tag }: NotesClientProps) {
     throwOnError: true,
   });
 
-  function closeModal() {
-    setIsModal(false);
-  }
-
-  function cancelForm() {
-    setIsModal(false);
-  }
-
-  function createBtn() {
-    setIsModal(true);
-    setTypeModal("form");
-  }
-
   const changeWord = useDebouncedCallback((newWord: string) => {
-    const page = 1;
-    setPage(page);
+    setPage(1); // при пошуку завжди починаємо з 1 сторінки
     setWord(newWord);
   }, 500);
 
@@ -61,6 +39,7 @@ export default function NotesClient({ tag }: NotesClientProps) {
     <div className={css.notes}>
       <div className={css.toolbar}>
         <SearchBox changeWord={changeWord} />
+
         {data && data.totalPages > 1 && (
           <Pagination
             page={page}
@@ -68,30 +47,15 @@ export default function NotesClient({ tag }: NotesClientProps) {
             setPage={setPage}
           />
         )}
-        <button className={css.toolBtn} onClick={createBtn}>
+
+        {/* Кнопка тепер просто посилання */}
+        <Link href="/notes/action/create" className={css.toolBtn}>
           Create note +
-        </button>
+        </Link>
       </div>
+
       {data && data.notes.length > 0 && (
-        <NoteList
-          setIsModal={setIsModal}
-          setMessage={setMessage}
-          setTypeModal={setTypeModal}
-          noteList={data.notes}
-        />
-      )}
-      {isModal && (
-        <Modal onClose={closeModal}>
-          {typeModal === "form" && (
-            <Link href="/notes/action/create">Create note +</Link>
-          )}
-          {typeModal === "create" && message && (
-            <CreateMessage note={message} mess="Is created" />
-          )}
-          {typeModal === "delete" && message && (
-            <CreateMessage note={message} mess="Is deleted" />
-          )}
-        </Modal>
+        <NoteList noteList={data.notes} /> // без пропсів модалки
       )}
     </div>
   );
