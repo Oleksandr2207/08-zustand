@@ -6,9 +6,35 @@ import {
 
 import { fetchNoteById } from "@/lib/api";
 import NoteDetailsClient from "./NoteDetails.client";
+import { Metadata } from "next";
 
 interface NoteProps {
   params: Promise<{ id: string }>;
+}
+
+type Props = {
+  params: { id: string };
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const note = await fetchNoteById(params.id);
+
+  return {
+    title: `${note.title} | NoteHub`,
+    description: note.content.slice(0, 120),
+    openGraph: {
+      title: note.title,
+      description: note.content.slice(0, 120),
+      url: `https://your-domain.com/notes/${params.id}`,
+      images: [
+        {
+          url: "https://ac.goit.global/fullstack/react/notehub-og-meta.jpg",
+          width: 1200,
+          height: 630,
+        },
+      ],
+    },
+  };
 }
 
 export default async function NoteDetails({ params }: NoteProps) {

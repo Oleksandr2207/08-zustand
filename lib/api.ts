@@ -7,6 +7,7 @@ interface Answer {
   totalPages: number;
 }
 
+
 const token = process.env.NEXT_PUBLIC_NOTEHUB_TOKEN;
 
 export async function fetchFilterNotes(
@@ -20,6 +21,7 @@ export async function fetchFilterNotes(
       {
         headers: {
           Authorization: `Bearer ${token}`,
+          
         },
       }
     );
@@ -27,6 +29,7 @@ export async function fetchFilterNotes(
     return res.data;
   }
 
+  console.log("TOKEN:", token);
   if (tag !== 'all' && !search) {
     const res = await axios.get<Answer>(
       `https://notehub-public.goit.study/api/notes?tag=${tag}&page=${page}&perPage=12`,

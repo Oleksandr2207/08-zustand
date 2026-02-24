@@ -1,5 +1,10 @@
-type TagNote = 'Todo' | 'Work' | 'Personal' | 'Meeting' | 'Shopping';
-
+export type TagNote =
+  | 'Todo'
+  | 'Work'
+  | 'Personal'
+  | 'Meeting'
+  | 'Shopping';
+  
 export type FetchTagNote =
   | 'Todo'
   | 'Work'
